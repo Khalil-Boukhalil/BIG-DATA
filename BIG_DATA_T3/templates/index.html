@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Availability Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #444;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .status {
+            font-weight: bold;
+            color: #fff;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .available {
+            background-color: #4CAF50;
+        }
+        .full {
+            background-color: #f44336;
+        }
+        .prediction {
+            text-align: center;
+            font-size: 1.5em;
+            padding: 20px;
+            margin-top: 30px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+        }
+        .button-container {
+            text-align: center;
+            margin: 20px;
+        }
+        .btn-toggle {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .btn-toggle:hover {
+            background-color: #45a049;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Parking Availability</h1>
+
+    <!-- Prediction Section (Directly under title) -->
+
+
+    <!-- Toggle Buttons -->
+    <div class="button-container">
+        <button class="btn-toggle" onclick="toggleTable('available')">Available Parking</button>
+        <button class="btn-toggle" onclick="toggleTable('full')">Full Parking</button>
+    </div>
+
+    <!-- Parking Status Table (Available) -->
+    <div id="availableTable" class="parking-table">
+        <h2>Available Parking</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Lot ID</th>
+                    <th>Detected Cars</th>
+                    <th>Total Spaces</th>
+                    <th>Free Spaces</th>
+                    <th>Status</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for status in parking_status %}
+                    {% if status.status == 'Available' %}
+                    <tr>
+                        <td>{{ status.lot_id }}</td>
+                        <td>{{ status.detected_cars }}</td>
+                        <td>{{ status.total_spaces }}</td>
+                        <td>{{ status.free_spaces }}</td>
+                        <td class="status available">{{ status.status }}</td>
+                        <td>{{ status.timestamp }}</td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Parking Status Table (Full) -->
+    <div id="fullTable" class="parking-table hidden">
+        <h2>Full Parking</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Lot ID</th>
+                    <th>Detected Cars</th>
+                    <th>Total Spaces</th>
+                    <th>Free Spaces</th>
+                    <th>Status</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for status in parking_status %}
+                    {% if status.status == 'Full' %}
+                    <tr>
+                        <td>{{ status.lot_id }}</td>
+                        <td>{{ status.detected_cars }}</td>
+                        <td>{{ status.total_spaces }}</td>
+                        <td>{{ status.free_spaces }}</td>
+                        <td class="status full">{{ status.status }}</td>
+                        <td>{{ status.timestamp }}</td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <p>Smart Parking System - Developed with Flask & MongoDB</p>
+    </footer>
+
+    <script>
+        function toggleTable(status) {
+            // Hide both tables
+            document.getElementById('availableTable').classList.add('hidden');
+            document.getElementById('fullTable').classList.add('hidden');
+
+            // Show the selected table
+            if (status === 'available') {
+                document.getElementById('availableTable').classList.remove('hidden');
+            } else if (status === 'full') {
+                document.getElementById('fullTable').classList.remove('hidden');
+            }
+        }
+    </script>
+   <div class="prediction">
+        <h2>Predicted Free Spaces:</h2>
+        <p>{{ predicted_spaces }}</p>
+    </div>
+</body>
+</html>
